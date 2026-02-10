@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cheat Sheet Visual CNC - Fanuc/Denford</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        .code-font {
+            font-family: 'Roboto Mono', monospace;
+        }
+        .card-break {
+            break-inside: avoid;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8 min-h-screen">
+
+    <!-- Header / Título -->
+    <header class="mb-8 text-center">
+        <h1 class="text-3xl md:text-5xl font-extrabold text-slate-800 mb-2">GUÍA RÁPIDA DE CÓDIGO G</h1>
+        <p class="text-slate-500 font-semibold uppercase tracking-wider">Estándar Fanuc / Denford Mill</p>
+    </header>
+
+    <!-- Leyenda de Colores (Opcional, implícita en el diseño) -->
+    <div class="max-w-7xl mx-auto mb-6 flex flex-wrap justify-center gap-4 text-xs font-bold text-white">
+        <span class="bg-blue-600 px-3 py-1 rounded-full">MOVIMIENTO (G0-G3)</span>
+        <span class="bg-emerald-600 px-3 py-1 rounded-full">COORDENADAS (G17-G91)</span>
+        <span class="bg-amber-500 px-3 py-1 rounded-full">HERRAMIENTA (G40-G49)</span>
+        <span class="bg-purple-600 px-3 py-1 rounded-full">CICLOS (G80-G99)</span>
+        <span class="bg-rose-600 px-3 py-1 rounded-full">MÁQUINA (M-Codes)</span>
+    </div>
+
+    <!-- Grid Masonry Layout -->
+    <div class="max-w-7xl mx-auto columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6">
+
+        <!-- 1. COMANDOS DE MOVIMIENTO (Azul) -->
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden border-t-8 border-blue-600 card-break">
+            <div class="bg-blue-50 p-4 border-b border-blue-100">
+                <h2 class="text-xl font-bold text-blue-800 flex items-center">
+                    <span class="text-2xl mr-2">🚀</span> MOVIMIENTO
+                </h2>
+                <p class="text-xs text-blue-600 mt-1">Grupo G00 - G03</p>
+            </div>
+            <table class="w-full text-sm text-left text-slate-600">
+                <thead class="bg-slate-50 text-xs uppercase font-bold text-slate-500">
+                    <tr>
+                        <th class="px-4 py-2">Código</th>
+                        <th class="px-4 py-2">Descripción</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                    <tr class="hover:bg-blue-50 transition">
+                        <td class="px-4 py-3 code-font font-bold text-blue-600 text-lg">G00</td>
+                        <td class="px-4 py-3"><strong class="text-slate-800">Rápido</strong><br>Posicionamiento sin corte (máx velocidad).</td>
+                    </tr>
+                    <tr class="hover:bg-blue-50 transition">
+                        <td class="px-4 py-3 code-font font-bold text-blue-600 text-lg">G01</td>
+                        <td class="px-4 py-3"><strong class="text-slate-800">Lineal</strong><br>Corte recto. Requiere avance (F).</td>
+                    </tr>
+                    <tr class="hover:bg-blue-50 transition">
+                        <td class="px-4 py-3 code-font font-bold text-blue-600 text-lg">G02</td>
+                        <td class="px-4 py-3"><strong class="text-slate-800">Arco CW</strong><br>Circular horario (agujas reloj).</td>
+                    </tr>
+                    <tr class="hover:bg-blue-50 transition">
+                        <td class="px-4 py-3 code-font font-bold text-blue-600 text-lg">G03</td>
+                        <td class="px-4 py-3"><strong class="text-slate-800">Arco CCW</strong><br>Circular anti-horario.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 2. SISTEMAS DE COORDENADAS (Verde) -->
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden border-t-8 border-emerald-500 card-break">
+            <div class="bg-emerald-50 p-4 border-b border-emerald-100">
+                <h2 class="text-xl font-bold text-emerald-800 flex items-center">
+                    <span class="text-2xl mr-2">📐</span> COORDENADAS
+                </h2>
+                <p class="text-xs text-emerald-600 mt-1">Configuración y Planos</p>
+            </div>
+            <table class="w-full text-sm text-left text-slate-600">
+                <tbody class="divide-y divide-slate-100">
+                    <tr>
+                        <td class="px-4 py-2 code-font font-bold text-emerald-600">G17</td>
+                        <td class="px-4 py-2">Plano XY (Fresado estándar)</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2 code-font font-bold text-emerald-600">G21</td>
+                        <td class="px-4 py-2 font-bold text-slate-800">Milímetros (mm)</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2 code-font font-bold text-emerald-600">G20</td>
+                        <td class="px-4 py-2">Pulgadas (inch)</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2 code-font font-bold text-emerald-600">G28</td>
+                        <td class="px-4 py-2">Retorno a Home (Máquina)</td>
+                    </tr>
+                    <tr class="bg-emerald-50/50">
+                        <td class="px-4 py-2 code-font font-bold text-emerald-700 text-lg">G54</td>
+                        <td class="px-4 py-2"><strong class="text-emerald-900">Cero Pieza 1</strong><br>El origen principal (X0 Y0).</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2 code-font font-bold text-emerald-600">G90</td>
+                        <td class="px-4 py-2"><strong class="text-slate-800">Absolutas</strong><br>Medir desde el origen (Recomendado).</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2 code-font font-bold text-emerald-600">G91</td>
+                        <td class="px-4 py-2">Incrementales<br>Medir desde donde estás.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 3. COMPENSACIÓN Y HERRAMIENTA (Ámbar/Naranja) -->
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden border-t-8 border-amber-500 card-break">
+            <div class="bg-amber-50 p-4 border-b border-amber-100">
+                <h2 class="text-xl font-bold text-amber-800 flex items-center">
+                    <span class="text-2xl mr-2">⚙️</span> HERRAMIENTA
+                </h2>
+                <p class="text-xs text-amber-600 mt-1">Compensación de Radio y Altura</p>
+            </div>
+            <table class="w-full text-sm text-left text-slate-600">
+                <tbody class="divide-y divide-slate-100">
+                    <tr class="bg-red-50">
+                        <td class="px-4 py-2 code-font font-bold text-red-600">G40</td>
+                        <td class="px-4 py-2 font-bold text-red-900">CANCELAR Comp. Radio</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2 code-font font-bold text-amber-600">G41</td>
+                        <td class="px-4 py-2">Compensación Izquierda</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2 code-font font-bold text-amber-600">G42</td>
+                        <td class="px-4 py-2">Compensación Derecha</td>
+                    </tr>
+                    <tr class="border-t-2 border-amber-100">
+                        <td class="px-4 py-2 code-font font-bold text-amber-600 text-lg">G43</td>
+                        <td class="px-4 py-2"><strong class="text-slate-800">Comp. Altura (Length)</strong><br>Usa 'H' (Ej: G43 H1 Z10).</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2 code-font font-bold text-amber-600">G49</td>
+                        <td class="px-4 py-2">Cancelar Altura</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 4. CÓDIGOS M (MISCELÁNEOS) (Rojo/Rosa) -->
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden border-t-8 border-rose-500 card-break">
+            <div class="bg-rose-50 p-4 border-b border-rose-100">
+                <h2 class="text-xl font-bold text-rose-800 flex items-center">
+                    <span class="text-2xl mr-2">🔌</span> CÓDIGOS M
+                </h2>
+                <p class="text-xs text-rose-600 mt-1">Control de la Máquina</p>
+            </div>
+            <div class="grid grid-cols-1 divide-y divide-slate-100 text-sm">
+                <div class="p-3 flex items-center hover:bg-rose-50">
+                    <span class="code-font font-bold text-rose-600 w-12 text-lg">M03</span>
+                    <span class="text-slate-700">Husillo (Spindle) <strong>ON - Horario</strong></span>
+                </div>
+                <div class="p-3 flex items-center hover:bg-rose-50">
+                    <span class="code-font font-bold text-rose-600 w-12 text-lg">M05</span>
+                    <span class="text-slate-700">Husillo (Spindle) <strong>STOP</strong></span>
+                </div>
+                <div class="p-3 flex items-center hover:bg-rose-50">
+                    <span class="code-font font-bold text-rose-600 w-12 text-lg">M06</span>
+                    <span class="text-slate-700">Cambio de Herramienta (T1 M06)</span>
+                </div>
+                <div class="p-3 flex items-center hover:bg-rose-50">
+                    <span class="code-font font-bold text-rose-600 w-12 text-lg">M08</span>
+                    <span class="text-slate-700">Refrigerante (Coolant) ON</span>
+                </div>
+                <div class="p-3 flex items-center hover:bg-rose-50">
+                    <span class="code-font font-bold text-rose-600 w-12 text-lg">M09</span>
+                    <span class="text-slate-700">Refrigerante OFF</span>
+                </div>
+                <div class="p-3 flex items-center bg-slate-100">
+                    <span class="code-font font-bold text-slate-800 w-12 text-lg">M30</span>
+                    <span class="font-bold text-slate-800">FIN DE PROGRAMA</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. CICLOS DE TALADRADO (Morado) -->
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden border-t-8 border-purple-600 card-break">
+            <div class="bg-purple-50 p-4 border-b border-purple-100">
+                <h2 class="text-xl font-bold text-purple-800 flex items-center">
+                    <span class="text-2xl mr-2">🔩</span> CICLOS
+                </h2>
+                <p class="text-xs text-purple-600 mt-1">Taladrado Automático</p>
+            </div>
+            <table class="w-full text-sm text-left text-slate-600">
+                <tbody class="divide-y divide-slate-100">
+                    <tr class="bg-red-50">
+                        <td class="px-4 py-2 code-font font-bold text-red-600 text-lg">G80</td>
+                        <td class="px-4 py-2 font-bold text-red-900">CANCELAR CICLO</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2 code-font font-bold text-purple-600 text-lg">G81</td>
+                        <td class="px-4 py-2"><strong class="text-slate-800">Taladrado Simple</strong><br>Baja y sube directo (Punteado).</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2 code-font font-bold text-purple-600">G82</td>
+                        <td class="px-4 py-2">Taladrado con Espera (Avellanado).</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2 code-font font-bold text-purple-600 text-lg">G83</td>
+                        <td class="px-4 py-2"><strong class="text-slate-800">Taladrado Profundo</strong><br>Entra y sale para sacar viruta.</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2 code-font font-bold text-purple-600">G98</td>
+                        <td class="px-4 py-2">Retorno al Z Inicial (Seguro).</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2 code-font font-bold text-purple-600">G99</td>
+                        <td class="px-4 py-2">Retorno al punto R (Rápido).</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 6. DICCIONARIO DE LETRAS (Gris) -->
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden border-t-8 border-slate-500 card-break">
+            <div class="bg-slate-100 p-4 border-b border-slate-200">
+                <h2 class="text-xl font-bold text-slate-700 flex items-center">
+                    <span class="text-2xl mr-2">🔤</span> DIRECCIONES
+                </h2>
+                <p class="text-xs text-slate-500 mt-1">Parámetros auxiliares</p>
+            </div>
+            <div class="p-4 grid grid-cols-2 gap-4 text-sm">
+                <div class="bg-slate-50 p-2 rounded border border-slate-200">
+                    <span class="block text-xl font-bold text-slate-800 code-font">F</span>
+                    <span class="text-xs text-slate-500 uppercase">Feed (Avance)</span>
+                    <span class="block text-slate-600">mm/min</span>
+                </div>
+                <div class="bg-slate-50 p-2 rounded border border-slate-200">
+                    <span class="block text-xl font-bold text-slate-800 code-font">S</span>
+                    <span class="text-xs text-slate-500 uppercase">Speed (Giro)</span>
+                    <span class="block text-slate-600">RPM</span>
+                </div>
+                <div class="bg-slate-50 p-2 rounded border border-slate-200">
+                    <span class="block text-xl font-bold text-slate-800 code-font">T</span>
+                    <span class="text-xs text-slate-500 uppercase">Tool</span>
+                    <span class="block text-slate-600">Nº Herramienta</span>
+                </div>
+                <div class="bg-slate-50 p-2 rounded border border-slate-200">
+                    <span class="block text-xl font-bold text-slate-800 code-font">H</span>
+                    <span class="text-xs text-slate-500 uppercase">Height Offset</span>
+                    <span class="block text-slate-600">Para G43</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <footer class="mt-12 text-center text-slate-400 text-sm">
+        <p>© Generado por Gemini - Específico para Controladores Fanuc / Denford</p>
+    </footer>
+
+</body>
+</html>
