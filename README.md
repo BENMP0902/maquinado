@@ -51,6 +51,15 @@ maquinado/
 ### SolidWorks
 - [ ] Curso básico desde cero en progreso
 
+## 📈 Habilidades en Desarrollo
+
+| Habilidad | Nivel | Certificación |
+|-----------|-------|---------------|
+| Torno | 🟢 Intermedio | En curso |
+| CNC Fanuc | 🟡 Básico | En curso |
+| AutoCAD | 🟡 Básico | Planeado |
+| SolidWorks | 🟡 Básico | Planeado |
+
 ## 📌 Notas
 
 Este repositorio se actualiza constantemente conforme avanzo en mis cursos y prácticas.
