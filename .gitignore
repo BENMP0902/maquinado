@@ -1,6 +1,47 @@
-desktop.ini
-Thumbs.db
+# Claude Code metadata (local-only)
+.claude/
+
+# IDE / Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS artifacts
 .DS_Store
-*.tmp
+Thumbs.db
+desktop.ini
+
+# AutoCAD backups y locks
 *.bak
-.claude
+*.dwl
+*.dwl2
+*.sv$
+*.ac$
+
+# SolidWorks backups y locks
+*.bak.SLDPRT
+*.bak.SLDASM
+*.bak.SLDDRW
+~$*.SLDPRT
+~$*.SLDASM
+~$*.SLDDRW
+
+# CNC simulator temp files
+*.tmp
+*.cache
+
+# Office temp files
+~$*.docx
+~$*.xlsx
+
+# Python (por si ejecutas scripts)
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Node (por si llega contenido de software)
+node_modules/
+
+# Logs
+*.log

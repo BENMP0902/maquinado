@@ -1,357 +1,177 @@
-# 📐 3.autocad — Diseño Técnico 2D | CECATI 17
+# 3. AutoCAD
 
-Ejercicios y proyectos de **AutoCAD 2D** desde nivel básico.  
-Curso enfocado en dibujo técnico arquitectónico, planos estructurales, e instalaciones.
-
-> ⚠️ **NOTA DIDÁCTICA:** Los ejercicios en esta carpeta son de aprendizaje progresivo. Comienzan con formas básicas (estrellas, cruces) y avanzan hacia planos arquitectónicos completos. El enfoque es dominar comandos fundamentales antes de proyectos complejos.
+Diseño técnico 2D — *technical drafting and architectural drawing*. Curso impartido en CECATI No. 17, Querétaro, dentro del programa de capacitación. Cubre desde fundamentos de dibujo técnico hasta planos arquitectónicos completos con instalaciones y estructura.
 
 ---
 
-## 🗂️ Estructura de esta carpeta
+## Estado actual
+
+Curso completado a nivel de proyecto integrador. Proyecto final entregado: serie de 8 planos técnicos de una casa estilo tradicional (arquitectónico, instalaciones, estructural). Pendiente: refinamientos avanzados de presentación (layouts, viewports, ploteo a escala) y proyecto arquitectónico de diseño propio.
+
+---
+
+## Lo último completado
+
+- **Abril 2026** — Plano arquitectónico final entregado (`Plano_Arquitectonico.dwg` + PDF para impresión).
+- **Marzo 2026** — Ejercicios de medición (distancia, área, ángulo, radio) — `14-03-26.dwg`.
+- **Marzo 2026** — Ejercicios de sombreado y acabado — `07-03-26.dwg`.
+
+---
+
+## Highlight del portafolio: Casa Estilo Tradicional
+
+Proyecto integrador del curso. Serie completa de **8 planos técnicos** de una vivienda unifamiliar, generados desde cero en AutoCAD 2D. Cubre las tres categorías típicas de un proyecto arquitectónico real:
+
+### Planos arquitectónicos
+
+| # | Plano | Contenido principal |
+|---|---|---|
+| 1 | Casa Estilo Tradicional 2D | Vista general del proyecto |
+| 2 | Planta Arquitectónica | Distribución de espacios, dimensiones, ubicación de puertas y ventanas, mobiliario básico |
+| 3 | Planta de Techo y Fachada | Estructura de techumbre, pendientes, bajadas pluviales, elevación frontal |
+| 4 | Isométrico y Corte Longitudinal | Vista isométrica desde 2D, corte mostrando alturas, niveles, cimentación, losa |
+
+### Planos de instalaciones
+
+| # | Plano | Contenido principal |
+|---|---|---|
+| 5 | Instalación Hidrosanitaria y Gas | Red de agua fría/caliente, drenaje sanitario y pluvial, línea de gas LP |
+| 6 | Instalación Eléctrica | Circuitos de iluminación, contactos, tablero de distribución, acometida |
+
+### Planos estructurales
+
+| # | Plano | Contenido principal |
+|---|---|---|
+| 7 | Plano Estructural 1 — Cimentación | Trazo de cimientos, zapatas, cadenas de desplante, especificaciones de concreto y acero |
+| 8 | Plano Estructural 2 — Superestructura | Castillos, dalas, losas de entrepiso, estructura de techumbre |
+
+> **Nota técnica:** Esta serie reproduce el alcance documental real de un proyecto arquitectónico ejecutivo. En industria, estos 8 planos son el conjunto mínimo que un constructor necesita para ejecutar la obra.
+
+Las imágenes están en `proyecto-final/` con nombres `1.- Casa Estilo Tradicional 2D.jpg` a `8.- Plano Estructural 2 2D.jpg`. El archivo editable es `Plano_Arquitectonico.dwg`.
+
+---
+
+## Sobre el curso
+
+**Institución:** CECATI No. 17 — Querétaro
+**Software:** AutoCAD 2024 (licencia educativa Autodesk)
+**Modalidad:** Práctica directa con plano técnico → digitalización → entrega en formato profesional.
+
+El curso reproduce el flujo de un *drafter* (dibujante técnico) profesional: recepción de croquis o requerimiento → trazo en AutoCAD con estándares correctos → acotación → impresión a escala. Esta progresión es la base para cualquier disciplina que use planos: arquitectura, manufactura, instalaciones.
+
+---
+
+## Estructura
 
 ```
 3.autocad/
-├── ejercicios/
-│   ├── Dibujo_1_Estrella.pdf
-│   ├── Dibujo_2_Cruz_Invertida.dwg
-│   ├── Libreria.dwg
-│   └── Pie_de_Plano.dwg
-├── proyectos/
-│   ├── planos-arquitectonicos/
-│   │   ├── 1_Casa_Estilo_Tradicional_2D.jpg
-│   │   ├── 2_Planta_Arquitectonica_2D.jpg
-│   │   ├── 3_Planta_Techo_Fachada_2D.jpg
-│   │   └── 4_Isometrico_Corte_Longitudinal_2D.jpg
-│   ├── instalaciones/
-│   │   ├── 5_Instalacion_Hidrosanitario_Gas_2D.jpg
-│   │   ├── 6_Instalacion_Electrica_2D.jpg
-│   │   ├── 7_Plano_Estructural_1_2D.jpg
-│   │   └── 8_Plano_Estructural_2_2D.jpg
-│   └── recursos/
-│       ├── La_Armonia_en_el_Color_Nuevas_Tendencias.pdf
-│       └── Sensacion_Significado_Aplicacion_Color.pdf
-└── README.md  ← este archivo
+├── ejercicios/             # Ejercicios cortos (cotas, sombreados, mediciones)
+├── planos-dibujos/         # Dibujos didácticos iniciales (estrella, cruz)
+├── proyecto-final/         # 8 planos del proyecto arquitectónico integrador
+├── recursos/               # Bibliotecas, plantillas, material de teoría del color
+└── README.md
 ```
 
 ---
 
-## 📚 Curso: AutoCAD Básico desde Cero
+## Recursos en esta carpeta
 
-### 🎯 Objetivo del Curso
-Dominar herramientas fundamentales de AutoCAD 2D para producir planos técnicos arquitectónicos con estándares profesionales.
+`recursos/` contiene material de apoyo del curso:
 
-### 🛠️ Herramientas y Comandos en Aprendizaje
+- **`Libreria.dwg`** — biblioteca de símbolos arquitectónicos: mobiliario (camas, mesas, sillas), elementos sanitarios (WC, lavabo, regadera), puertas y ventanas (varias medidas), vegetación. Insertable como bloques en proyectos.
+- **`Pie_de_Plano.dwg`** — cajetín técnico normalizado con campos de título, escala, fecha, dibujante, proyecto, logo CECATI y cuadro de revisiones. Plantilla reutilizable.
+- **`La Armonía en el Color - Nuevas Tendencias.pdf`** — círculo cromático, combinaciones armónicas (complementarios, análogos, tríadas), psicología del color en arquitectura.
+- **`Sensación + Significado y aplicación del color FINAL.pdf`** — percepción visual del color, significado cultural, accesibilidad y contraste.
 
-#### ✅ Comandos Básicos (Dominados)
-- **LINE** — Líneas rectas
-- **CIRCLE** — Círculos
-- **ARC** — Arcos
-- **RECTANGLE** — Rectángulos
-- **POLYGON** — Polígonos regulares
-- **OFFSET** — Paralelas a distancia fija
-- **TRIM** — Recortar líneas
-- **EXTEND** — Extender líneas
-- **FILLET** — Redondear esquinas
-- **CHAMFER** — Biselar esquinas
-
-#### 🔄 En Progreso
-- **ARRAY** (Rectangular/Polar) — Patrones de repetición
-- **HATCH** — Sombreado y rellenos
-- **BLOCK** — Bloques reutilizables
-- **DIMENSION** — Acotación técnica
-- **LAYERS** — Gestión de capas
-- **XREF** — Referencias externas
-- **LAYOUT** — Espacio de presentación
-
-#### ⏳ Pendientes (Avanzado)
-- **SCALE** — Escalado preciso
-- **ROTATE** — Rotación con ángulos exactos
-- **MIRROR** — Simetría
-- **PEDIT** — Edición de polilíneas
-- **SPLINE** — Curvas suaves
-- **ANNOTATE** — Anotaciones profesionales
+> **Nota de industria:** AutoCAD es técnico, pero la presentación final de planos involucra criterios estéticos. Los recursos de teoría del color del curso reflejan que un buen *drafter* no solo dibuja correcto, también comunica visualmente.
 
 ---
 
-## 📐 Ejercicios Completados
+## Convenciones técnicas aplicadas
 
-### Serie 1: Formas Básicas (Introducción)
+### Capas (*layers*) por tipo de elemento
 
-#### Ejercicio 1: Estrella de 5 Puntas
-**Archivo:** `Dibujo_1_Estrella.pdf`  
-**Comandos practicados:**
-- LINE (líneas conectadas formando estrella)
-- TRIM (eliminar excesos)
-- Uso de coordenadas polares
+Estándar del curso, replicable en cualquier proyecto:
 
-**Objetivo:** Familiarización con sistema de coordenadas y comandos básicos de dibujo.
+| Capa | Color | Uso |
+|---|---|---|
+| MUROS | Blanco (7) | Muros estructurales |
+| PUERTAS | Rojo (1) | Puertas y abatimientos |
+| VENTANAS | Azul (5) | Ventanas y marcos |
+| MOBILIARIO | Cyan (4) | Muebles y equipamiento |
+| COTAS | Magenta (6) | Dimensiones y acotaciones |
+| EJES | Verde (3) | Ejes de trazo (tipo de línea: centro) |
+| TEXTO | Blanco (7) | Textos y etiquetas |
+| HATCH | Amarillo (2) | Rellenos y sombreados |
 
----
+### Escalas de impresión
 
-#### Ejercicio 2: Cruz Invertida
-**Archivo:** `Dibujo_2_Cruz_Invertida.dwg`  
-**Comandos practicados:**
-- RECTANGLE
-- OFFSET (crear grosor de brazos)
-- TRIM/EXTEND
-- Precisión dimensional
+| Tipo de plano | Escala |
+|---|---|
+| Planta arquitectónica | 1:50 / 1:100 |
+| Detalles constructivos | 1:20 / 1:25 |
+| Instalaciones | 1:75 / 1:100 |
+| Fachadas y cortes | 1:50 / 1:75 |
 
-**Objetivo:** Dominar comandos de modificación y construcción geométrica precisa.
+### Formatos de papel (norma ISO 216)
 
----
-
-### Serie 2: Biblioteca de Símbolos y Plantillas
-
-#### Librería de Símbolos
-**Archivo:** `Libreria.dwg`  
-**Contenido:**
-- Símbolos arquitectónicos estándar
-- Mobiliario básico (camas, mesas, sillas)
-- Elementos sanitarios (WC, lavabo, regadera)
-- Puertas y ventanas (varias medidas)
-- Vegetación y elementos de paisaje
-
-**Uso:** Insertar como bloques en proyectos arquitectónicos.
+| Formato | Dimensiones | Uso |
+|---|---|---|
+| A4 | 210 × 297 mm | Ejercicios, detalles |
+| A3 | 297 × 420 mm | Planos individuales |
+| A2 | 420 × 594 mm | Plantas completas |
+| A1 | 594 × 841 mm | Proyectos integradores |
 
 ---
 
-#### Pie de Plano (Cajetín)
-**Archivo:** `Pie_de_Plano.dwg`  
-**Contenido:**
-- Cajetín técnico normalizado
-- Campos: Título, Escala, Fecha, Dibujante, Proyecto
-- Logo CECATI No. 17
-- Cuadro de revisiones
+## Glosario EN/ES
 
-**Uso:** Plantilla para todos los planos técnicos futuros.
+Terminología técnica de dibujo asistido por computadora, útil para entrevistas y vacantes en industria internacional.
 
----
-
-## 🏗️ Proyectos Arquitectónicos
-
-### Proyecto Integrador: Casa Estilo Tradicional 2D
-
-Serie de 8 planos técnicos completos de una vivienda unifamiliar.
-
-#### Planos Arquitectónicos
-
-**1. Planta Arquitectónica General**  
-`2_Planta_Arquitectonica_2D.jpg`
-- Distribución de espacios
-- Dimensiones de cuartos
-- Ubicación de puertas y ventanas
-- Mobiliario básico
-
-**2. Planta de Techo y Fachada**  
-`3_Planta_Techo_Fachada_2D.jpg`
-- Estructura de techumbre
-- Pendientes y bajadas pluviales
-- Elevación frontal
-- Detalles de acabados exteriores
-
-**3. Isométrico y Corte Longitudinal**  
-`4_Isometrico_Corte_Longitudinal_2D.jpg`
-- Vista isométrica 3D (desde 2D)
-- Corte longitudinal mostrando alturas
-- Niveles de piso terminado
-- Detalles de cimentación y losa
+| Inglés | Español | Nota |
+|---|---|---|
+| *CAD* (*Computer-Aided Design*) | Diseño asistido por computadora | Categoría general |
+| *Drafting* | Dibujo técnico | Específicamente la disciplina del dibujo |
+| *Drafter* | Dibujante técnico | Rol profesional |
+| *Layer* | Capa | Sistema de organización por elementos |
+| *Block* | Bloque | Símbolo o elemento reutilizable |
+| *XREF* (*External Reference*) | Referencia externa | Vinculación de archivos DWG |
+| *Layout* | Espacio de presentación | Vista para impresión |
+| *Viewport* | Ventana gráfica | Vista de modelo dentro del layout |
+| *Modelspace* | Espacio modelo | Donde se dibuja a escala 1:1 |
+| *Paperspace* | Espacio papel | Donde se compone la impresión |
+| *Object Snap (OSNAP)* | Referencia a objetos | Puntos de anclaje (endpoint, midpoint, center) |
+| *Polar tracking* | Rastreo polar | Asistente de ángulos |
+| *Ortho mode* | Modo ortogonal | Restricción a líneas horizontales/verticales |
+| *Hatch* | Sombreado / patrón de relleno | Texturas indicativas (tierra, concreto, etc.) |
+| *Plot* | Trazado / impresión | Generar salida final (papel o PDF) |
+| *Plot style* | Estilo de impresión | Asignación de colores → grosor de línea |
+| *DWG* / *DXF* | (formatos) | DWG nativo Autodesk; DXF intercambio |
+| *Annotation* | Anotación | Texto, cotas, marcas técnicas |
+| *Dimension* | Cota / dimensión | Indicación numérica de medida |
+| *Tolerance* | Tolerancia | Rango admisible (en planos de manufactura) |
+| *Title block* | Cajetín / pie de plano | Bloque de información del plano |
+| *Scale* | Escala | Relación dibujo:realidad |
 
 ---
 
-#### Planos de Instalaciones
+## Conexión con manufactura
 
-**4. Instalación Hidrosanitaria y Gas**  
-`5_Instalacion_Hidrosanitario_Gas_2D.jpg`
-- Red de agua fría y caliente
-- Drenaje sanitario y pluvial
-- Registro de agua
-- Línea de gas LP
-- Simbología normalizada
+AutoCAD no es una disciplina aislada en este portafolio. El dibujo técnico es la **lengua común** entre quien diseña una pieza y quien la fabrica. Las habilidades adquiridas aquí son transversales:
 
-**5. Instalación Eléctrica**  
-`6_Instalacion_Electrica_2D.jpg`
-- Circuitos de iluminación
-- Circuitos de contactos (tomacorrientes)
-- Tablero de distribución
-- Acometida principal
-- Simbología eléctrica
+- **Lectura activa de planos** — saber cómo se construye un plano hace que lo leas con criterio crítico, no como receptor pasivo. Esto se aplica directamente a la programación CNC: entender qué cotas son críticas y cuáles son de referencia.
+- **Convenciones de acotación** — los símbolos de tolerancia, GD&T, indicaciones de superficie son los mismos en planos arquitectónicos y de manufactura.
+- **Pensamiento espacial 2D ↔ 3D** — manejar planta + corte + isométrico es el mismo músculo mental que se usa en SolidWorks (modelado 3D) y en CNC (visualizar trayectorias).
 
 ---
 
-#### Planos Estructurales
+## Siguiente paso
 
-**6. Plano Estructural 1 — Cimentación**  
-`7_Plano_Estructural_1_2D.jpg`
-- Trazo de cimientos
-- Detalles de zapatas
-- Cadenas de desplante
-- Especificaciones de concreto y acero
-
-**7. Plano Estructural 2 — Superestructura**  
-`8_Plano_Estructural_2_2D.jpg`
-- Castillos y dalas
-- Losas de entrepiso
-- Estructura de techumbre
-- Detalles constructivos
+1. **Acotación profesional** — dominar `DIMENSION` con estilos personalizados, tolerancias y notación GD&T básica.
+2. **Proyecto arquitectónico de diseño propio** — aplicar todo el conocimiento del curso a una vivienda diseñada desde cero, no replicada de plantilla.
 
 ---
 
-## 🎨 Teoría del Color (Recursos Complementarios)
-
-Aunque AutoCAD es principalmente técnico, el curso incluye teoría del color para presentaciones y renders:
-
-### Recurso 1: La Armonía en el Color
-**Archivo:** `La_Armonia_en_el_Color_Nuevas_Tendencias.pdf`
-
-**Contenido:**
-- Círculo cromático
-- Combinaciones armónicas (complementarios, análogos, tríadas)
-- Psicología del color en arquitectura
-- Tendencias modernas en paletas de color
-
-**Aplicación:** Selección de colores para presentación de planos y renders.
-
----
-
-### Recurso 2: Sensación, Significado y Aplicación del Color
-**Archivo:** `Sensacion_Significado_Aplicacion_Color.pdf`
-
-**Contenido:**
-- Percepción visual del color
-- Significado cultural de colores
-- Aplicación en diseño arquitectónico
-- Accesibilidad y contraste
-
-**Aplicación:** Comunicación efectiva en láminas de presentación.
-
----
-
-## 📏 Estándares y Convenciones Aprendidos
-
-### Capas (Layers) por Tipo de Elemento
-
-| Capa | Color | Tipo de Línea | Contenido |
-|------|-------|---------------|-----------|
-| **MUROS** | Blanco (7) | Continua, grosor 0.5mm | Muros estructurales |
-| **PUERTAS** | Rojo (1) | Continua, grosor 0.25mm | Puertas y abatimientos |
-| **VENTANAS** | Azul (5) | Continua, grosor 0.25mm | Ventanas y marcos |
-| **MOBILIARIO** | Cyan (4) | Continua, grosor 0.18mm | Muebles y equipamiento |
-| **COTAS** | Magenta (6) | Continua, grosor 0.18mm | Dimensiones y acotaciones |
-| **EJES** | Verde (3) | Centro, grosor 0.13mm | Ejes de trazo |
-| **TEXTO** | Blanco (7) | Continua, grosor 0.18mm | Textos y etiquetas |
-| **HATCH** | Amarillo (2) | Continua, grosor 0.13mm | Rellenos y sombreados |
-
----
-
-### Escalas Utilizadas
-
-| Tipo de Plano | Escala Común | Uso |
-|---------------|--------------|-----|
-| Planta arquitectónica | 1:50 / 1:100 | Vista general de distribución |
-| Detalles constructivos | 1:20 / 1:25 | Ampliación de elementos específicos |
-| Planos de instalaciones | 1:75 / 1:100 | Redes de agua, drenaje, electricidad |
-| Fachadas | 1:50 / 1:75 | Elevaciones exteriores |
-| Cortes | 1:50 / 1:75 | Secciones verticales |
-
----
-
-### Formatos de Papel (Norma ISO)
-
-| Formato | Dimensiones (mm) | Uso en el Curso |
-|---------|------------------|-----------------|
-| A4 | 210 × 297 | Ejercicios básicos, detalles |
-| A3 | 297 × 420 | Planos individuales |
-| A2 | 420 × 594 | Plantas arquitectónicas completas |
-| A1 | 594 × 841 | Proyectos integradores |
-
----
-
-## 🎓 Progreso de Aprendizaje
-
-### ✅ Fase 1: Fundamentos (COMPLETADA)
-- [x] Interfaz de AutoCAD y navegación
-- [x] Sistema de coordenadas (absolutas, relativas, polares)
-- [x] Comandos básicos de dibujo (LINE, CIRCLE, ARC, RECTANGLE)
-- [x] Comandos básicos de modificación (TRIM, EXTEND, OFFSET)
-- [x] Ejercicios de formas geométricas
-
-### 🔄 Fase 2: Dibujo Técnico (EN PROGRESO)
-- [x] Planos arquitectónicos completos
-- [x] Simbología normalizada
-- [x] Uso de capas (layers)
-- [ ] Acotación precisa (dimensiones)
-- [ ] Bloques y atributos
-- [ ] Sombreado y rellenos (hatch)
-
-### ⏳ Fase 3: Proyectos Avanzados (PRÓXIMAMENTE)
-- [ ] Proyecto arquitectónico propio (diseño original)
-- [ ] Planos de instalaciones complejas
-- [ ] Presentación profesional (layouts, viewports)
-- [ ] Ploteo e impresión a escala
-- [ ] Exportación a PDF de alta calidad
-
-### ⏳ Fase 4: Preparación para Certificación (OBJETIVO)
-- [ ] Dominio de todos los comandos esenciales
-- [ ] Velocidad de ejecución (shortcuts, comandos rápidos)
-- [ ] Estándares de presentación profesional
-- [ ] Preparación para examen de certificación AutoCAD
-
----
-
-## 📌 Notas Técnicas y Mejores Prácticas
-
-### Organización de Archivos
-- ✅ **Nombrar archivos descriptivamente:** `Planta_Arquitectonica_Casa_Tradicional.dwg`
-- ✅ **Versionar si hay cambios significativos:** `_v1`, `_v2`, `_final`
-- ✅ **Backup frecuente:** Guardar en múltiples ubicaciones (local, nube, GitHub)
-
-### Trabajo con Capas
-- ✅ **Una capa por tipo de elemento** (muros, puertas, cotas, etc.)
-- ✅ **Colores consistentes** siguiendo estándar del curso
-- ✅ **Desactivar capas** que no se estén editando para claridad visual
-- ✅ **Congelar capas de referencia** para evitar modificaciones accidentales
-
-### Precisión en Dibujo
-- ✅ **Usar SNAP y GRID** para alineación rápida
-- ✅ **Activar ORTHO** para líneas perfectamente horizontales/verticales
-- ✅ **OSNAP (Object Snap)** para puntos de referencia exactos (endpoint, midpoint, center)
-- ✅ **Verificar unidades** antes de comenzar (mm, cm, m, pulgadas)
-
-### Acotación (Dimensioning)
-- ⚠️ **Aún no dominado completamente**
-- Aprendiendo a usar estilos de acotación
-- Practicando ubicación de cotas sin saturar el plano
-
----
-
-## 🔗 Enlaces a Documentación Adicional
-
-- [README CNC](../2.CNC/README.md) — Programación CNC y ejercicios de maquinado
-- [README Torno](../1.Torno-Fresado/README.md) — Prácticas de torno convencional
-- [LEARNING.md](../LEARNING.md) — Bitácora completa de aprendizaje
-- [README Principal](../README.md) — Estructura completa del repositorio
-
----
-
-## 🎯 Próximos Ejercicios Planeados
-
-1. **Diseño de vivienda propia**
-   - Aplicar lo aprendido en proyecto original
-   - Plantas, fachadas, cortes, instalaciones
-   - Presentación profesional completa
-
-2. **Detalles constructivos**
-   - Ampliación de conexiones estructurales
-   - Detalles de carpintería
-   - Especificaciones técnicas
-
-3. **Planos de conjunto**
-   - Urbanización básica
-   - Distribución de lotes
-   - Trazado de vialidades
-
----
-
-**Última actualización:** 17 de Febrero 2026 | CECATI No. 17  
-**Estado:** Curso básico en progreso | Proyectos arquitectónicos completados  
-**Próximo hito:** Proyecto arquitectónico original + Acotación profesional
+**Curso institucional:** CECATI No. 17 — Querétaro
+**Estado:** Curso completado a nivel de proyecto integrador
+**Software:** AutoCAD 2024
