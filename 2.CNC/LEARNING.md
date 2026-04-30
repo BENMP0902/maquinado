@@ -1,729 +1,419 @@
-# 📚 LEARNING.md — Bitácora de Aprendizaje CNC
+# LEARNING — Programación CNC
 
-**Estudiante:** Benjamín  
-**Institución:** CECATI No. 17  
-**Período:** Enero - Febrero 2026  
-**Enfoque:** Programación CNC con Denford FANUC Milling v1.96
+Bitácora de aprendizaje de programación CNC. Documento personal donde registro lo que entendí mal, cómo lo corregí, y qué modelo mental me funcionó al final. No es referencia técnica — para eso están los [README de Torno-CNC](./Torno-CNC/README.md) y [Fresado-CNC](./Fresado-CNC/README.md). Aquí escribo el **proceso** de aprender, no el resultado.
 
----
-
-## 🎯 Propósito de este Documento
-
-Esta bitácora documenta mi viaje de aprendizaje en programación CNC, incluyendo:
-- ✅ Conceptos aprendidos y dominados
-- ❌ Errores cometidos y por qué ocurrieron
-- 🔧 Soluciones aplicadas y lecciones extraídas
-- 📈 Evolución desde código didáctico hacia mejores prácticas profesionales
-
-> **Filosofía de aprendizaje:** Los ejercicios en `2.CNC/` son **didácticos e iterativos**. Priorizo comprender fundamentos (comandos, sintaxis, lógica de movimientos) antes que implementar código perfecto. Los errores documentados aquí son **parte esencial del proceso** de aprender haciendo.
+> **Voz:** Primera persona, reflexiva. Los READMEs son para reclutadores; este archivo es para mí — y para cualquiera que quiera ver cómo se piensa al aprender CNC, no solo qué se aprendió.
 
 ---
 
-## 📖 Índice
+## Cómo está organizado
 
-1. [Fase 1: Primeros Pasos con G-code](#fase-1-primeros-pasos-con-g-code)
-2. [Fase 2: Interpolación Circular - Método R](#fase-2-interpolación-circular---método-r)
-3. [Fase 3: Coordenadas Incrementales G91](#fase-3-coordenadas-incrementales-g91)
-4. [Fase 4: Método I,J - El Desafío](#fase-4-método-ij---el-desafío)
-5. [Errores Comunes y Soluciones](#errores-comunes-y-soluciones)
-6. [Conceptos Fundamentales Aprendidos](#conceptos-fundamentales-aprendidos)
-7. [Transición hacia Mejores Prácticas](#transición-hacia-mejores-prácticas)
-8. [Próximos Pasos en mi Formación](#próximos-pasos-en-mi-formación)
+Por **concepto técnico**, no por orden cronológico. Cuando vuelvo a buscar algo, lo busco por tema (*"¿cómo se calcula I/J?"*), no por fecha. Cada entrada tiene la misma estructura:
+
+- **Qué entendí mal al inicio** — el malentendido específico.
+- **Qué entiendo ahora** — el modelo mental correcto.
+- **Cómo lo corregí** — la metodología que me funcionó.
+- **Referencia** — qué archivo del repo materializa este aprendizaje.
 
 ---
 
-## Fase 1: Primeros Pasos con G-code
+## Índice de conceptos
 
-### Ejercicio: Matriz de Cilindros (O0002, O0003)
-
-#### 🎯 Objetivo
-Crear un patrón de 10 cilindros (matriz 5×2) usando múltiples herramientas y ciclos fijos.
-
-#### 📝 Conceptos Nuevos
-- **Cambio de herramienta** con `M06 T##`
-- **Ciclos fijos** de taladrado (G81, G73/G83)
-- **Comandos Denford** específicos (G170/G171) para pocket milling
-- Gestión de **múltiples operaciones** en un solo programa
-
-#### ✅ Lo que Funcionó
-```gcode
-(BROCA DE CENTROS)
-N20 M06 T01
-N25 M03 S2000
-N30 G00 X20 Y15
-N35 G00 Z1
-N40 G01 Z-5 F100        ← Centrado manual, simple
-N45 G00 Z1              ← Retracción
-```
-
-**Por qué funcionó:** Secuencia clara y directa. Usar G01 para centrado es didáctico y permite ver el movimiento paso a paso.
-
-#### ❌ Error Encontrado: Ciclo G81 vs Movimientos Manuales
-**Mi código inicial:**
-```gcode
-N30 G00 X20 Y15
-N35 G00 Z1
-N40 G01 Z-5 F100
-N45 G00 Z1
-N50 G00 X40            ← Repetir todo el bloque para cada agujero
-N55 G01 Z-5
-N60 G00 Z1
-```
-
-**Problema:** Código repetitivo y largo. 10 agujeros = 40 líneas.
-
-**Solución Aprendida:** Usar ciclo G81
-```gcode
-N30 G81 X20 Y15 Z-5 R1 F100    ← Primera posición + parámetros
-N35 X40                         ← Solo coordenadas, repite ciclo
-N40 X60
-N45 X80
-N50 X100
-N55 G80                         ← Cancelar ciclo
-```
-
-**Lección:** Los ciclos fijos existen para eliminar repetición. Aprenderlos ahorra líneas y hace el código más legible.
-
-#### 🔧 Mejora Aplicada: De G73 a G83
-
-**Primera versión (O0002):**
-```gcode
-N187 G91 G73 X20 Z-22 R2 Q5 K5 F80
-```
-
-**Problema:** G73 no retrae completamente entre picoteos, viruta puede acumularse en agujeros profundos.
-
-**Versión mejorada (O0003):**
-```gcode
-N187 G91 G83 X20 Z-22 R2 Q5 F80    ← G83 con retracción completa
-```
-
-**Lección:** G83 es más seguro para taladrado profundo en aluminio. Toma más tiempo pero garantiza evacuación de viruta.
-
-#### 💡 Insight Clave
-> **G170/G171 (Denford específico)** son comandos poderosos pero complejos. Mi primer intento tenía parámetros incorrectos. Aprendí que G170 *define* la geometría y G171 *ejecuta* el fresado. Son dos pasos separados, no un solo comando.
+1. [Interpolación circular: G02 vs G03](#1-interpolación-circular-g02-vs-g03)
+2. [Método I/J para arcos](#2-método-ij-para-arcos)
+3. [Coordenadas absolutas G90 vs incrementales G91](#3-coordenadas-absolutas-g90-vs-incrementales-g91)
+4. [Ciclos fijos: por qué existen](#4-ciclos-fijos-por-qué-existen)
+5. [G73 vs G83: cuándo cuál](#5-g73-vs-g83-cuándo-cuál)
+6. [Velocidad de husillo y SFM](#6-velocidad-de-husillo-y-sfm)
+7. [Comandos M comentados accidentalmente](#7-comandos-m-comentados-accidentalmente)
+8. [Numeración de líneas: cómo no romper la secuencia](#8-numeración-de-líneas-cómo-no-romper-la-secuencia)
+9. [Geometría desviada: el peligro de programar de memoria](#9-geometría-desviada-el-peligro-de-programar-de-memoria)
+10. [Tabla rápida de errores recurrentes](#tabla-rápida-de-errores-recurrentes)
 
 ---
 
-## Fase 2: Interpolación Circular - Método R
+## 1. Interpolación circular: G02 vs G03
 
-### Ejercicio: Letra S - Versión Absoluta (O0004)
+### Qué entendí mal al inicio
 
-#### 🎯 Objetivo
-Trazar contorno de letra "S" usando arcos circulares (G02/G03) con el método del radio (R).
+Pensaba que G02 y G03 eran "uno para arcos cóncavos y otro para convexos". Asocié la dirección del arco con su forma percibida en el plano.
 
-#### 📝 Conceptos Nuevos
-- **G02** (arco horario) vs **G03** (arco antihorario)
-- **Método R** para definir arcos: `G03 X1.5 Y0 R1.5`
-- Diferencia entre arcos **cóncavos** (G02) y **convexos** (G03)
-- Secuencia lógica de semicírculos para formar la "S"
+### Qué entiendo ahora
 
-#### ✅ Mi Primer Arco Exitoso
-```gcode
-N55 G03 X1.5 Y0 R1.5
-```
-**Inicio:** (0, 1.5)  
-**Fin:** (1.5, 0)  
-**Radio:** 1.5"  
-**Resultado:** Semicírculo perfecto de 180°
+G02 y G03 **no se refieren a la forma del arco**, se refieren a la **dirección de rotación de la herramienta vista desde el eje +Z**:
 
-**Por qué funcionó:** 
-- Radio R es simple e intuitivo
-- Para semicírculos el cálculo es directo: R = distancia entre inicio y fin / 2 (en línea recta sería 2.12", pero el arco necesita R=1.5" para cubrir 180°)
+- **G02** = *clockwise* (sentido horario, como las manecillas del reloj).
+- **G03** = *counter-clockwise* (sentido antihorario).
 
-#### ❌ Error: Confusión entre G02 y G03
+La forma del arco (cóncava o convexa) depende del observador y del punto de referencia. La dirección de rotación es **invariante**: la regla de la mano derecha siempre la decide.
 
-**Mi código inicial (línea N70):**
-```gcode
-N70 G02 X1 Y3.5 R.75        ← Arco pequeño de transición
-```
+### Cómo lo corregí
 
-**Problema:** En simulación el arco iba en dirección contraria a lo esperado.
+Antes de escribir cualquier G02/G03, dibujo el arco en papel y trazo la dirección con el dedo desde el inicio hacia el fin. Si va en sentido contrario a las manecillas del reloj **vista desde arriba (+Z)** → G03. Si va en sentido de las manecillas → G02.
 
-**Causa raíz:** No visualicé correctamente la **regla de la mano derecha**:
-- G02 (CW/horario) = pulgar apunta -Z, dedos indican rotación
-- G03 (CCW/antihorario) = pulgar apunta +Z, dedos indican rotación
+Es lento al principio. Después de cinco arcos se vuelve automático.
 
-**Solución:** Cambié a G03 después de simular y verificar dirección.
+### Referencia
 
-**Lección:** 
-> Antes de escribir G02/G03, dibujar el arco en papel y trazar la dirección con el dedo. Si va contra las manecillas del reloj visto desde arriba = G03.
-
-#### ⚠️ Error Encontrado: Líneas Duplicadas N125
-
-```gcode
-N125 G01 X0
-N125 G01 Y0        ← ERROR: Mismo número de línea
-```
-
-**Problema:** Algunas máquinas rechazan esto o solo ejecutan la primera línea.
-
-**Causa:** Copiar/pegar sin actualizar numeración.
-
-**Solución:** Numerar secuencialmente:
-```gcode
-N125 G01 X0
-N130 G01 Y0
-```
-
-**Lección:** Usar incrementos de 5 o 10 (N10, N20, N30...) permite insertar líneas después sin renumerar todo.
-
-#### ❌ Error: Comando Incompleto
-
-```gcode
-N145 G01           ← Sin coordenadas X, Y, o Z
-```
-
-**Problema:** G01 requiere al menos una coordenada de destino.
-
-**Causa:** Borré las coordenadas durante edición y no me di cuenta.
-
-**Solución:** Siempre verificar que cada G01 tenga destino.
-
-**Lección:** Simular SIEMPRE antes de dar por terminado un programa. El simulador detecta estos errores inmediatamente.
+`Fresado-CNC/ejercicios-letra-S/O0004_S_Absoluto_R.nc` — primer ejercicio donde tuve que decidir G02 vs G03 conscientemente.
 
 ---
 
-## Fase 3: Coordenadas Incrementales G91
+## 2. Método I/J para arcos
 
-### Ejercicio: Letra S - Versión Incremental (O0005)
+Este fue **mi error técnico más significativo** hasta el momento. Lo documento con detalle porque la metodología que extraje sirve para cualquier arco futuro.
 
-#### 🎯 Objetivo
-Reescribir O0004 usando **coordenadas incrementales** (G91) en lugar de absolutas (G90).
+### Qué entendí mal al inicio
 
-#### 📝 Conceptos Nuevos
-- **G91:** Todas las coordenadas son relativas a la posición actual
-- Conversión mental: "moverme +X desde donde estoy" vs "ir a posición X absoluta"
-- Ventaja: Patrones repetitivos son más fáciles de escribir
+Asumí que I y J eran **el radio del arco** descompuesto en componentes. Si el arco tenía radio 1.5", supuse que I = 1.5 si el arco era horizontal o J = 1.5 si era vertical.
 
-#### ✅ Lo que Aprendí: Conversión Absoluto → Incremental
-
-**Código absoluto (G90):**
-```gcode
-N50 G01 X0          ← Posición actual: (-0.5, 1.5)
-N55 G03 X1.5 Y0 R1.5   ← Ir a (1.5, 0) absoluto
-```
-
-**Código incremental (G91):**
-```gcode
-N30 G01 X0          ← Me muevo de -0.5 a 0 = +0.5 en X
-N35 G91             ← Activo modo incremental
-N40 G03 X1.5 Y-1.5 R1.5   ← Desde (0, 1.5), moverme +1.5 en X, -1.5 en Y
-```
-
-**Fórmula de conversión:**
-```
-X_incremental = X_destino - X_actual
-Y_incremental = Y_destino - Y_actual
-```
-
-#### 💡 Ventaja Descubierta: Patrones Repetitivos
-
-En O0005, las transiciones pequeñas fueron más fáciles:
-```gcode
-N55 G02 X-.5 Y.5 R.75
-N60 G02 X.5 Y.5          ← Reusar mismo movimiento relativo
-N65 G02 X.5 Y-.5         ← Solo cambio de signo
-```
-
-**Lección:** G91 brilla cuando hay **simetría** o **repeticiones** en el diseño.
-
-#### ⚠️ Problema Encontrado: Perder Noción de Posición Absoluta
-
-Después de 20 líneas en G91, **no sabía dónde estaba la herramienta** en coordenadas absolutas.
-
-**Solución adoptada:** Llevar tabla mental o en papel:
-```
-Línea | X_abs | Y_abs | Movimiento incremental
-------|-------|-------|----------------------
-N40   |  1.5  |  0    | X+1.5 Y-1.5
-N45   |  3.0  |  1.5  | X+1.5 Y+1.5
-N50   |  1.5  |  3.0  | X-1.5 Y+1.5
-```
-
-**Lección:** 
-> G91 es poderoso pero requiere **disciplina** para rastrear posición. En programas largos, considerar regresar a G90 periódicamente para verificar posición absoluta.
-
----
-
-## Fase 4: Método I,J - El Desafío
-
-### Ejercicio: Letra S con I,J (O0006)
-
-#### 🎯 Objetivo
-Usar el método **I,J** (offset al centro del arco) en lugar de R para ganar precisión.
-
-#### 📝 Conceptos Nuevos
-- **I** = Distancia en X desde **punto de inicio** (no origen) hasta el centro del arco
-- **J** = Distancia en Y desde **punto de inicio** hasta el centro del arco
-- Siempre incremental desde el punto actual, nunca desde (0,0)
-- Método estándar en industria y software CAM
-
-#### ❌ **ERROR CRÍTICO: Confusión entre Radio e I,J**
-
-**Mi código (línea N45):**
+Mi código fue:
 ```gcode
 N45 G03 X1.5 Y0 I1.5 J0
 ```
 
-**¿Qué esperaba?**  
-Un semicírculo de (0, 1.5) a (1.5, 0) con radio 1.5"
+Esperaba un semicírculo de (0, 1.5) a (1.5, 0). Obtuve un arco de 90° en lugar de 180°.
 
-**¿Qué obtuve?**  
-Un arco de 90° (cuarto de círculo) en lugar de 180°
+### Qué entiendo ahora
 
-**Diagnóstico del error:**
+I y J **no son el radio**. Son los **offsets desde el punto de inicio hasta el centro del arco**, en X y Y respectivamente.
+
+El centro del arco es lo que importa. La máquina ya sabe el radio porque puede calcularlo desde la distancia inicio-centro. Lo que necesita es **dónde está el centro**.
+
+Tres consecuencias importantes de esto:
+
+1. I/J **siempre se miden desde el punto de inicio**, no desde el origen absoluto del programa.
+2. I/J pueden ser **negativos** (centro a la izquierda o abajo del inicio).
+3. El punto final solo sirve para **validar** — la máquina verifica que la distancia inicio-centro sea igual a la distancia fin-centro. Si no coinciden, el arco es geométricamente imposible y la máquina genera error.
+
+### Cómo lo corregí — metodología que ahora aplico
+
+**Paso 1: Encontrar el centro del arco.**
+
+Si es semicírculo (180°), el centro está en el punto medio entre inicio y fin:
 ```
-Inicio:  (0, 1.5)
-Destino: (1.5, 0)
-
-Mi I,J:  I=1.5, J=0
-Centro calculado por la máquina: (0+1.5, 1.5+0) = (1.5, 1.5)
-
-Centro CORRECTO para semicírculo: (0.75, 0.75)
-
-Por lo tanto:
-I correcto = 0.75 - 0 = 0.75
-J correcto = 0.75 - 1.5 = -0.75
-```
-
-**Causa raíz:** Usé el **radio** (1.5) como valor de I, pensando que I era una "distancia total". No entendí que I,J son **offsets incrementales** desde el inicio.
-
-#### 🔧 Cómo Corregir el Error
-
-**Paso 1:** Encontrar el centro del arco
-Para un semicírculo, el centro está en el **punto medio**:
-```
-X_centro = (X_inicio + X_final) / 2 = (0 + 1.5) / 2 = 0.75
-Y_centro = (Y_inicio + Y_final) / 2 = (1.5 + 0) / 2 = 0.75
+X_centro = (X_inicio + X_final) / 2
+Y_centro = (Y_inicio + Y_final) / 2
 ```
 
-**Paso 2:** Calcular I,J desde el inicio
+Para arcos no-semicirculares, hay que usar geometría — pero la mayoría de mis ejercicios actuales son semicírculos.
+
+**Paso 2: Calcular I y J como offsets.**
 ```
-I = X_centro - X_inicio = 0.75 - 0 = 0.75
-J = Y_centro - Y_inicio = 0.75 - 1.5 = -0.75
+I = X_centro − X_inicio
+J = Y_centro − Y_inicio
 ```
 
-**Código correcto:**
+**Paso 3: Verificar signos por ubicación geométrica.**
+
+- I positivo → centro a la **derecha** del inicio.
+- I negativo → centro a la **izquierda** del inicio.
+- J positivo → centro **arriba** del inicio.
+- J negativo → centro **abajo** del inicio.
+
+Si el resultado contradice mi intuición geométrica, el cálculo está mal.
+
+**Paso 4: Aplicar al comando.**
+```gcode
+G02/G03 X_final Y_final I_calculado J_calculado
+```
+
+Aplicado al ejercicio que fallé:
+- Inicio: (0, 1.5). Fin: (1.5, 0). Semicírculo.
+- Centro: ((0+1.5)/2, (1.5+0)/2) = (0.75, 0.75).
+- I = 0.75 − 0 = **0.75**.
+- J = 0.75 − 1.5 = **−0.75**.
+
+Código correcto:
 ```gcode
 N45 G03 X1.5 Y0 I0.75 J-0.75
 ```
 
-#### 📐 Metodología de Cálculo I,J (lo que aprendí)
+### Por qué la industria prefiere I/J sobre R
 
-**Para CUALQUIER arco:**
+R puede ser ambiguo en arcos > 180° (un mismo R produce dos arcos posibles). I/J es siempre inequívoco porque el centro es único. Por eso los CAM industriales generan I/J por defecto.
 
-1. **Identificar puntos:**
-   - Inicio: donde está la herramienta AHORA
-   - Fin: donde quiero llegar
-   - Radio del arco (del diseño)
+### Referencia
 
-2. **Encontrar el centro:**
-   - Si es semicírculo (180°): centro = punto medio
-   - Si es arco menor: usar geometría (triángulos, Pitágoras)
-   - Si es arco mayor (>180°): método avanzado
-
-3. **Calcular I,J:**
-   ```
-   I = X_centro - X_inicio
-   J = Y_centro - Y_inicio
-   ```
-
-4. **Verificar signos:**
-   - I positivo → centro a la DERECHA del inicio
-   - I negativo → centro a la IZQUIERDA
-   - J positivo → centro ARRIBA del inicio
-   - J negativo → centro ABAJO
-
-5. **Escribir comando:**
-   ```gcode
-   G02/G03 X_final Y_final I_calculado J_calculado
-   ```
-
-#### 💡 Insight Clave sobre I,J
-
-> **El valor de I,J NO depende del punto final.**  
-> Solo dependen de dónde está el inicio y dónde está el centro.  
-> La máquina usa el punto final para **validar** que el arco sea posible (distancia inicio-centro = distancia fin-centro).
-
-#### ⚠️ Otros Errores en O0006
-
-**Error 2: Geometría Desviada (línea N50)**
-```gcode
-N50 G03 X1.5 Y3 I0 J1.5
-```
-
-**Problema:** El segundo arco debería ir de (1.5, 0) a (3, 1.5), pero programé (1.5, 3).
-
-**Causa:** No seguí el diseño original, inventé coordenadas.
-
-**Lección:** Siempre tener el **plano técnico** a la vista durante programación. No confiar en memoria.
-
-**Error 3: Movimientos de Ajuste Manual**
-```gcode
-N65 G01 X1.5 Y3.7
-N70 G01 X1.2 Y3.4
-N75 G01 X2 Y3.4
-N80 G01 Y3.3
-```
-
-**Problema:** Estos movimientos no están en el diseño. Los agregué para "arreglar" errores de arcos anteriores.
-
-**Causa raíz:** En lugar de corregir los I,J incorrectos, intenté compensar con movimientos lineales adicionales.
-
-**Lección:** 
-> Nunca "parchear" errores con movimientos extra. Si el arco está mal, **corregir el arco**. El código limpio es código correcto desde el inicio.
+`Fresado-CNC/ejercicios-letra-S/O0006_S_Absoluto_IJ_375.nc` — programa donde cometí el error y lo dejé documentado.
 
 ---
 
-## Fase 5: Aprendizaje de Velocidades y RPM
+## 3. Coordenadas absolutas G90 vs incrementales G91
 
-### Ejercicio: Cambio de Herramienta de 1/2" a 3/8"
+### Qué entendí mal al inicio
 
-#### 🎯 Objetivo
-Entender la relación entre **diámetro de herramienta** y **RPM** necesario.
+Pensaba que G91 era "más fácil" porque parecía intuitivo: *"avanza 5 mm a la derecha"* suena más natural que *"ve a la posición X=27.3"*.
 
-#### 📝 Concepto Aprendido: SFM (Surface Feet per Minute)
+### Qué entiendo ahora
 
-**Fórmula:**
+G91 es más fácil **localmente** y más difícil **globalmente**.
+
+- **Localmente**: cada bloque es intuitivo (avanza, sube, gira). Los patrones repetitivos se escriben más fácil.
+- **Globalmente**: pierdo noción de dónde está la herramienta en coordenadas absolutas. Después de 20 líneas en G91, necesito calcular la posición absoluta sumando todos los movimientos previos. Si me equivoco en un cálculo intermedio, todo el resto del programa hereda el error.
+
+### Cómo lo corregí
+
+Adopté tres reglas personales:
+
+1. **G90 por defecto** en todo programa. Solo cambio a G91 cuando hay simetría o repetición clara.
+2. **Llevar tabla de posiciones** en papel mientras programo en G91, con tres columnas: línea, X absoluta, Y absoluta, movimiento incremental ejecutado.
+3. **Volver a G90 periódicamente** en programas largos para "reanclarme" a coordenadas absolutas y evitar errores acumulados.
+
+### Referencia
+
+Comparar `O0004_S_Absoluto_R.nc` (todo G90) con `O0005_S_Incremental_G91_R.nc` (todo G91) muestra el contraste de ambos enfoques sobre la misma pieza.
+
+---
+
+## 4. Ciclos fijos: por qué existen
+
+### Qué entendí mal al inicio
+
+Pensaba que los ciclos fijos (G81, G83, etc.) eran "atajos opcionales" — que si escribía los movimientos manualmente con G00/G01, conseguía el mismo resultado.
+
+Mi primera versión de taladrado de 10 agujeros tenía **40 líneas**: 4 movimientos por agujero (posicionar XY → bajar Z rápido → bajar Z corte → subir Z) × 10 agujeros.
+
+### Qué entiendo ahora
+
+Los ciclos fijos no son opcionales — son la forma profesionalmente correcta. Tres razones:
+
+1. **Reducen errores de transcripción**: una sola línea define el patrón completo.
+2. **Son legibles**: `G81 X20 Y15 Z-5 R1 F100` comunica intención (taladrar) además de movimiento.
+3. **Son optimizados internamente**: el control aplica trayectorias eficientes que no replicaría con G00/G01 manual.
+
+La versión con G81 reduce 40 líneas a:
+```gcode
+N30 G81 X20 Y15 Z-5 R1 F100
+N35 X40
+N40 X60
+N45 X80
+N50 X100
+N55 G80
+```
+
+### Cómo lo corregí
+
+Adopté la regla: **si una operación se repite 3+ veces, busco el ciclo fijo correspondiente antes de escribirlo manual**. Si no existe ciclo, considero subrutina (M98/M99) — que aún no aplico pero sé que es el siguiente nivel.
+
+### Referencia
+
+`Fresado-CNC/ejercicios-cilindros/O0002_Cilindros_v1.nc` — primer programa donde apliqué G81.
+
+---
+
+## 5. G73 vs G83: cuándo cuál
+
+### Qué entendí mal al inicio
+
+Asumí que G73 y G83 eran intercambiables y la diferencia era cosmética.
+
+### Qué entiendo ahora
+
+Ambos son ciclos de taladrado profundo con picoteo (*peck drilling*) — entran al material, retraen, vuelven a entrar más profundo, etc. La diferencia crítica está en **cuánto retraen** entre picoteos:
+
+- **G73** (*high-speed peck*): retracción **parcial**. Pierde menos tiempo, pero la viruta puede acumularse en agujeros profundos.
+- **G83** (*peck drilling estándar*): retracción **completa** hasta plano de seguridad. Garantiza evacuación de viruta, pero es más lento.
+
+### Cómo lo corregí
+
+Regla que apliqué después del incidente:
+
+- **Aluminio + agujeros profundos** (>3× diámetro): G83. La viruta de aluminio es larga y tiende a aglomerarse.
+- **Acero + agujeros poco profundos**: G73 puede ser válido.
+- **Cuando dudo**: G83. La penalización en tiempo es menor que el costo de romper una broca por viruta atascada.
+
+### Referencia
+
+Comparar `O0002_Cilindros_v1.nc` (G73) con `O0003_Cilindros_v2.nc` (G83) — la versión 2 corrige el error de la 1.
+
+---
+
+## 6. Velocidad de husillo y SFM
+
+### Qué entendí mal al inicio
+
+Pensaba que las RPM eran un parámetro arbitrario que se elegía "razonablemente". Cuando cambié de fresa 1/2" a 3/8", mantuve el mismo RPM y el simulador no se quejó. Asumí que estaba bien.
+
+### Qué entiendo ahora
+
+RPM no es independiente — está determinado por el **SFM** (*Surface Feet per Minute*, velocidad de corte superficial), que sí es propiedad del material y la herramienta:
+
 ```
 RPM = (SFM × 12) / (π × Diámetro_pulgadas)
 ```
 
-**Para aluminio con fresa de carburo:**
-- SFM típico = 600-800 (usaremos 600 para ser conservadores)
+Para aluminio con carburo, SFM ≈ 600–800. Eso significa:
 
-**Herramienta 1/2" (0.5"):**
-```
-RPM = (600 × 12) / (π × 0.5)
-RPM = 7200 / 1.57
-RPM ≈ 4580
+- Fresa 1/2" → RPM ≈ 4500–6000.
+- Fresa 3/8" → RPM ≈ 6000–8000.
 
-En ejercicio didáctico usé: 2000 RPM (conservador para aprendizaje)
-```
+**Herramientas más pequeñas necesitan MÁS RPM**, no menos. La razón física: el perímetro es menor, así que la herramienta debe girar más rápido para mantener la misma velocidad lineal en el filo.
 
-**Herramienta 3/8" (0.375"):**
-```
-RPM = (600 × 12) / (π × 0.375)
-RPM = 7200 / 1.178
-RPM ≈ 6112
+### Cómo lo corregí
 
-En ejercicio didáctico usé: 2400 RPM
-```
+En contexto didáctico (Denford), uso RPM conservadores (2000–2400) por dos razones:
 
-**Proporción:**
-```
-RPM_3/8 / RPM_1/2 = 2400 / 2000 = 1.2 (20% más rápido)
-```
+1. Reduce riesgo en caso de programa con error.
+2. Permite observar la simulación con calma.
 
-#### 💡 Regla Práctica Aprendida
-> **Herramientas más pequeñas → RPM más altos**  
-> El perímetro es menor, entonces deben girar más rápido para mantener la misma velocidad de superficie (SFM).
+Pero **declaro explícitamente en comentarios** del código que son valores didácticos, no de producción:
 
-#### ⚠️ Nota sobre Valores Didácticos
-
-Los RPM que usé (2000-2400) son **muy conservadores** comparados con lo óptimo (4500-6100). Esto es **intencional** en fase de aprendizaje:
-
-**Ventajas de RPM conservadores:**
-- ✅ Menos riesgo de rotura de herramienta
-- ✅ Más tiempo para observar la simulación
-- ✅ Menor carga en el husillo del simulador
-
-**Desventaja:**
-- ⚠️ Tiempos de ciclo más largos (no importa en simulación)
-
-**Lección:**  
-> En producción real, calcular RPM óptimos por material y herramienta es crítico para eficiencia. En aprendizaje, ser conservador es seguro.
-
----
-
-## Errores Comunes y Soluciones
-
-### 📋 Tabla de Errores Frecuentes
-
-| # | Error | Causa | Solución | Lección |
-|---|-------|-------|----------|---------|
-| 1 | **I,J = Radio** | No entender que I,J son offsets desde inicio | Calcular centro, luego I = X_c - X_i, J = Y_c - Y_i | I,J siempre desde punto actual |
-| 2 | **Comandos M comentados** `(M03 S2000` | Paréntesis convierten en comentario | Quitar paréntesis: `M03 S2000` | Paréntesis = comentarios, no código |
-| 3 | **Líneas duplicadas** (N125 × 2) | Copiar sin actualizar número | Numerar secuencialmente con incrementos de 5-10 | Usar N10, N20, N30... permite insertar |
-| 4 | **G01 sin coordenadas** | Borrado accidental durante edición | Verificar que cada G01 tenga X, Y, o Z | Simular siempre antes de dar por hecho |
-| 5 | **Confusión G02/G03** | No visualizar dirección del arco | Dibujar en papel, aplicar regla mano derecha | G03 = contra reloj visto desde +Z |
-| 6 | **Arcos de 180° con R** | R puede ser ambiguo en semicírculos | Usar signo: R+ para arco menor, R- para mayor | Mejor usar I,J para arcos de 180° |
-| 7 | **Perder posición en G91** | Modo incremental sin rastreo | Llevar tabla de posiciones acumuladas | Volver a G90 periódicamente |
-| 8 | **Sin retracción final** | Olvidar G00 Z1.0 antes de M30 | Siempre: Z segura → M05 → M30 | Checklist de finalización |
-| 9 | **Punto decimal incorrecto** `X10.0` vs `X10` | Inconsistencia en notación | FANUC acepta ambas, pero ser consistente | Preferir `.0` para claridad |
-| 10 | **Geometría desviada** | No seguir plano técnico | Tener dibujo a la vista, verificar cada coord | Medir dos veces, programar una |
-
----
-
-## Conceptos Fundamentales Aprendidos
-
-### 1. Interpolación Circular (G02/G03)
-
-**Dominado:**
-- ✅ Diferencia entre G02 (CW) y G03 (CCW)
-- ✅ Método R para arcos simples
-- ✅ Visualizar dirección de arcos en papel
-
-**En progreso:**
-- 🔄 Método I,J (conceptualmente entendido, requiere más práctica)
-- 🔄 Arcos complejos (>180° o <180°)
-
-### 2. Sistemas de Coordenadas
-
-**Dominado:**
-- ✅ G90 (absoluto) para programación clara
-- ✅ G91 (incremental) para patrones repetitivos
-- ✅ Conversión entre absoluto e incremental
-
-**Pendiente:**
-- ⏳ G54-G59 (offsets de trabajo múltiples)
-- ⏳ G92 (shift de origen temporal)
-
-### 3. Ciclos Fijos
-
-**Dominado:**
-- ✅ G81 (taladrado simple)
-- ✅ G73/G83 (taladrado profundo con picoteo)
-- ✅ G80 (cancelar ciclo)
-
-**Pendiente:**
-- ⏳ G82 (taladrado con pausa)
-- ⏳ G84 (roscado)
-- ⏳ G85-G89 (mandrinado, escariado)
-
-### 4. Gestión de Herramientas
-
-**Dominado:**
-- ✅ M06 T## (cambio de herramienta)
-- ✅ Relación diámetro ↔ RPM
-- ✅ Uso de múltiples herramientas en un programa
-
-**Pendiente:**
-- ⏳ Compensación de radio (G41/G42)
-- ⏳ Compensación de longitud (G43/G44)
-- ⏳ Offsets de herramienta (D##, H##)
-
-### 5. Estructura de Programa
-
-**Dominado:**
-- ✅ Secuencia básica: Setup → Posicionamiento → Corte → Retorno
-- ✅ Uso de comentarios `( )`
-- ✅ Numeración de líneas N##
-
-**Pendiente:**
-- ⏳ Inicialización completa (G21 G17 G40 G49 G80 G90)
-- ⏳ Subrutinas (M98/M99)
-- ⏳ Variables y macros (#####)
-
----
-
-## Transición hacia Mejores Prácticas
-
-### 📊 Comparación: Mi Código Actual vs Profesional
-
-#### Mi Código Didáctico (O0004)
 ```gcode
-O0004
-(CORTADORA .5)
-N20 G20 G80 G54 G90
-N25 G28 G40 G95
-N30 M06 T01
-N35 G00 X-.5 Y1.5
-N40 G00 Z.1
-N45 G01 Z-.250 F100
-N50 G01 X0
-N55 G03 X1.5 Y0 R1.5
-[...]
-N155 M30 M05
+N20 M03 S2400 (RPM DIDACTICO - PRODUCCION ~6000)
 ```
 
-**Características:**
-- ✅ Funciona en simulador
-- ✅ Geometría básica correcta
-- ⚠️ Comandos M incompletos
-- ⚠️ Una sola pasada profunda
-- ⚠️ Sin retracción segura
+Esto es importante para la honestidad técnica del código y evita que alguien copie/pegue mis valores en producción real.
 
-#### Código Profesional (Objetivo)
+### Referencia
+
+`Fresado-CNC/ejercicios-letra-S/O0006_S_Absoluto_IJ_375.nc` — primer ejercicio donde cambié de fresa 1/2" a 3/8" y tuve que pensar el ajuste de RPM.
+
+---
+
+## 7. Comandos M comentados accidentalmente
+
+### Qué entendí mal al inicio
+
+Vi en algún recurso un código con paréntesis y asumí que eran "agrupamiento" o "claridad visual", como en matemáticas o programación de software.
+
+Mi código tenía:
 ```gcode
-%
-O0004 (LETRA S - PRODUCCION)
-(PROGRAMADOR: BENJAMIN - CECATI 17)
-(FECHA: 2026-02-17)
-(MATERIAL: ALUMINIO 6061 - 3" X 5" X 0.75")
-(HERRAMIENTA: T01 - FRESA PLANA 1/2" CARBURO)
-
-(SECCION: INICIALIZACION)
-N10 G21 G17 G40 G49 G80 G90   (Reset completo)
-N15 G20                        (Pulgadas)
-N20 G54                        (Offset trabajo 1)
-N25 G28 G91 Z0                 (Home Z)
-N30 G90                        (Volver a absoluto)
-
-(SECCION: SETUP HERRAMIENTA)
-N35 T01 M06                    (Cambio a T01)
-N40 S2000 M03                  (Husillo ON 2000 RPM)
-N45 G43 H01 Z1.0               (Comp. longitud + altura segura)
-N50 M08                        (Refrigerante ON)
-
-(SECCION: POSICIONAMIENTO)
-N55 G00 X-0.5 Y1.5             (Posición inicial)
-N60 G00 Z0.1                   (Aproximación)
-
-(SECCION: CORTE - PASADA 1 DE 2)
-N65 G01 Z-0.125 F10.0          (Penetra 50% profundidad)
-N70 G01 X0 F50.0               (Inicia contorno)
-N75 G03 X1.5 Y0 R1.5
-N80 G03 X3 Y1.5 R1.5
-[... contorno completo ...]
-N145 G01 X-0.5 Y1.5            (Retorno a inicio)
-
-(SECCION: CORTE - PASADA 2 DE 2)
-N150 G01 Z-0.125 F10.0         (Profundidad final)
-N155 G01 X0 F50.0
-[... contorno de nuevo ...]
-N220 G01 X-0.5 Y1.5
-
-(SECCION: FINALIZACION)
-N225 G00 Z1.0                  (Retracción segura)
-N230 M09                       (Refrigerante OFF)
-N235 M05                       (Husillo OFF)
-N240 G91 G28 Z0                (Home Z)
-N245 G28 X0 Y0                 (Home XY)
-N250 G90                       (Absoluto)
-N255 M30                       (Fin programa)
-%
+N20 (M03 S2000)
 ```
 
-**Diferencias clave:**
-- ✅ Header con metadata (programador, fecha, material, herramienta)
-- ✅ Reset completo de máquina (G21 G17 G40 G49 G80)
-- ✅ Compensación de longitud (G43 H01)
-- ✅ Refrigerante activo (M08/M09)
-- ✅ **Dos pasadas** incrementales (-0.125" cada una)
-- ✅ Velocidades diferenciadas (F10 penetración, F50 contorno)
-- ✅ Retracción completa y home al final
-- ✅ Secciones comentadas para claridad
+Esperaba que el husillo arrancara. No arrancó. Tardé en entender por qué.
 
-### 📈 Plan de Progresión
+### Qué entiendo ahora
 
-#### ✅ Fase 1: Fundamentos (COMPLETADA)
-- [x] Comandos G00, G01, G02, G03
-- [x] Modo G90 vs G91
-- [x] Ciclos fijos básicos
-- [x] Cambio de herramienta
-- [x] Método R para arcos
+En G-code, los paréntesis convierten todo lo que está entre ellos en **comentario**. El controlador los ignora completamente. No son agrupamiento ni paréntesis matemáticos.
 
-#### 🔄 Fase 2: Refinamiento (EN PROGRESO)
-- [x] Método I,J conceptualmente
-- [ ] I,J en práctica (3+ ejercicios más)
-- [ ] Múltiples pasadas (DOC incremental)
-- [ ] Velocidades diferenciadas por operación
-- [ ] Headers y comentarios detallados
+Es lo equivalente a `// comentario` en JavaScript o `# comentario` en Python.
 
-#### ⏳ Fase 3: Técnicas Avanzadas (PRÓXIMAMENTE)
-- [ ] Compensación de radio G41/G42
-- [ ] Subrutinas M98/M99
-- [ ] Estrategias de desbaste vs acabado
-- [ ] Optimización de trayectorias
-- [ ] Introducción a CAM (generar código desde SolidWorks)
+### Cómo lo corregí
 
-#### ⏳ Fase 4: Profesionalización (OBJETIVO)
-- [ ] Código listo para producción
-- [ ] Documentación técnica completa
-- [ ] Optimización de tiempos de ciclo
-- [ ] Control de calidad dimensional
-- [ ] Mantenimiento preventivo de herramientas
+Regla mental: **"si quiero que la máquina lo ejecute, NUNCA va entre paréntesis"**. Los paréntesis son exclusivamente para metadata: nombre de operación, dimensiones del material, advertencias para el operador.
+
+```gcode
+(LETRA S - PROGRAMA DIDACTICO)        ← comentario informativo
+N20 M03 S2000                          ← comando real, sin paréntesis
+```
+
+### Referencia
+
+`Fresado-CNC/ejercicios-letra-S/O0004_S_Absoluto_R.nc` — preserva las primeras versiones donde cometí este error.
 
 ---
 
-## Próximos Pasos en mi Formación
+## 8. Numeración de líneas: cómo no romper la secuencia
 
-### 🎯 Objetivos Inmediatos (Próximas 2 Semanas)
+### Qué entendí mal al inicio
 
-1. **Dominar cálculo de I,J**
-   - Realizar 5 ejercicios adicionales con arcos diferentes
-   - Crear hoja de cálculo para verificar I,J manualmente
-   - Practicar arcos menores a 90° y mayores a 180°
+Numeré líneas con incremento de 1: N1, N2, N3, N4...
 
-2. **Implementar múltiples pasadas**
-   - Reescribir O0004 con 2 pasadas de 0.125" cada una
-   - Comparar tiempos de simulación vs pasada única
-   - Documentar ventajas (vida herramienta, acabado)
+Funcionaba hasta que tuve que **insertar** una línea entre N5 y N6. Renombré todo desde ahí hacia adelante. Llevó tiempo y generé líneas duplicadas accidentalmente:
 
-3. **Estudiar compensación G41/G42**
-   - Leer manual de Denford sobre compensación
-   - Entender diferencia entre trayectoria programada vs real
-   - Ejercicio simple: cuadrado con compensación
+```gcode
+N125 G01 X0
+N125 G01 Y0   ← Duplicado por error de renombrado
+```
 
-### 🎯 Objetivos a Mediano Plazo (Próximos 2 Meses)
+Algunos controladores ejecutan solo el primer N125 y silenciosamente ignoran el segundo. Otros tiran error. Ninguno te avisa "tienes duplicados".
 
-4. **Introducción a CAM**
-   - Diseñar pieza simple en SolidWorks
-   - Usar SolidWorks CAM para generar trayectorias
-   - Comparar código generado vs mi código manual
-   - Identificar patrones profesionales
+### Qué entiendo ahora
 
-5. **Proyecto Integrador**
-   - Diseñar pieza original (no ejercicio del profesor)
-   - Programar con todas las mejores prácticas aprendidas
-   - Simular y corregir errores
-   - Documentar completamente
+La convención industrial estándar es **incrementar de 5 en 5 o de 10 en 10**: N10, N20, N30...
 
-### 📚 Recursos de Estudio Próximos
+La razón es simple: deja **espacio para insertar** sin renumerar. Si necesito agregar algo entre N20 y N30, lo numero N25.
 
-- [ ] Manual completo de Fanuc (referencia oficial)
-- [ ] Curso online de programación CAM
-- [ ] Libros recomendados por el profesor
-- [ ] Videos de operadores profesionales en YouTube
+### Cómo lo corregí
+
+Adopté incremento de 5. Es el balance entre:
+
+- Demasiado pequeño (1) → no deja espacio para insertar.
+- Demasiado grande (100) → desperdicia números, los archivos se ven raros.
+- 5 o 10 → estándar de industria, balance óptimo.
+
+### Referencia
+
+Aplicado consistentemente desde `O0004` en adelante.
 
 ---
 
-## 💡 Reflexiones Finales
+## 9. Geometría desviada: el peligro de programar de memoria
 
-### Lo Más Importante que Aprendí
+### Qué entendí mal al inicio
 
-> **Los errores son valiosos.** Cada error en mi código (I,J incorrectos, comandos M comentados, líneas duplicadas) me enseñó más que cuando algo funcionó a la primera. Documentar estos errores en `LEARNING.md` solidifica el aprendizaje y me permite evitarlos en el futuro.
+Después de mirar el plano por unos minutos, pensé que tenía las coordenadas memorizadas. Dejé el plano a un lado y programé "de cabeza".
 
-### Cambio de Mentalidad
+Resultado: en `O0006`, programé el segundo arco de la letra S con destino (1.5, 3) cuando el plano decía (3, 1.5). Las coordenadas estaban transpuestas en mi memoria.
 
-**Antes:**  
-"Quiero que mi código funcione sin errores en el primer intento"
+### Qué entiendo ahora
 
-**Ahora:**  
-"Voy a iterar, cometer errores, simular, corregir, y documentar el proceso. El código perfecto es el resultado de múltiples refinamientos."
+La memoria de trabajo humana es **limitada y poco confiable** para datos numéricos sin estructura. Confundir 1.5/3 con 3/1.5 es un error de tipo "transposición" que el cerebro comete sistemáticamente bajo carga cognitiva.
 
-### Agradecimientos
+Los profesionales de CNC **siempre tienen el plano físicamente a la vista durante la programación**. No es opcional ni señal de novicio — es protocolo.
 
-- **Profesor de CECATI 17:** Por ejercicios estructurados y feedback directo
-- **Claude (Anthropic AI):** Por análisis detallados, identificación de errores, y guías paso a paso
-- **Comunidad de programadores CNC:** Por cheatsheets y recursos compartidos
+### Cómo lo corregí
 
----
+Tres cambios de hábito:
 
-**Última actualización:** 17 de Febrero 2026  
-**Siguiente revisión:** Después de completar 5 ejercicios más con método I,J
+1. **Plano impreso o en pantalla, siempre visible**, durante toda la programación.
+2. **Verificar coordenada por coordenada** contra el plano antes de pasar a la siguiente línea.
+3. **Cuando un movimiento parezca "raro" en simulación, verificar contra plano antes de tocar el código**. La intuición de que algo está mal suele ser correcta — lo que está mal es la coordenada, no la simulación.
 
----
+### Referencia
 
-## 📎 Apéndice: Recursos y Referencias
-
-### Cheatsheets en mi Carpeta `/recursos`
-- `Cheatsheet_CNC_Torno_Fresa.png` — Comandos G/M por categoría
-- `Cheatsheet_Denford_Fanuc_v1.png` — Tabla de comandos Denford
-- `G_code_Fanuc.html` — Guía interactiva HTML
-
-### Enlaces Útiles (Externos)
-- Manual Denford: [Sitio oficial](https://www.denford.co.uk)
-- Fanuc G-code reference: Búsqueda "Fanuc G-code quick reference PDF"
-- Foros de CNC: CNCzone, Practical Machinist
-
-### Próximos Documentos a Crear
-- [ ] `CHEATSHEET_IJ_METHOD.md` — Guía rápida de cálculo I,J con ejemplos
-- [ ] `BEST_PRACTICES.md` — Checklist de código profesional
-- [ ] `PROJECT_LOG.md` — Bitácora de mi proyecto integrador final
+`Fresado-CNC/ejercicios-letra-S/O0006_S_Absoluto_IJ_375.nc` — preserva el error original como evidencia.
 
 ---
 
-*Este documento es un trabajo vivo. Se actualiza continuamente a medida que avanzo en mi formación.*
+## Tabla rápida de errores recurrentes
+
+Para consulta veloz cuando reviso código antes de simular:
+
+| # | Error | Síntoma | Corrección |
+|---|---|---|---|
+| 1 | I/J como radio | Arco de 90° donde esperaba 180° | Calcular centro, restar inicio |
+| 2 | M comentado entre paréntesis | Husillo no arranca, refrigerante no abre | Quitar paréntesis del comando |
+| 3 | Líneas duplicadas (N125 × 2) | Comportamiento errático en máquina | Renumerar con incremento de 5 |
+| 4 | G01 sin coordenadas | Error de ejecución o nada se mueve | Verificar X/Y/Z explícitos |
+| 5 | G02/G03 invertidos | Arco va en dirección contraria | Regla de mano derecha desde +Z |
+| 6 | Pierdo posición en G91 | No sé dónde está la herramienta | Volver a G90 periódicamente |
+| 7 | Sin retracción Z antes de M30 | Posible colisión al cambiar pieza | Checklist: Z safe → M05 → M30 |
+| 8 | Coordenadas transpuestas (X/Y intercambiadas) | Geometría desviada | Plano siempre visible, verificar |
+| 9 | RPM iguales para herramienta de distinto diámetro | Acabado pobre, desgaste excesivo | Recalcular con SFM al cambiar herramienta |
+| 10 | Parchar arco erróneo con G01 lineales | Pieza con muescas raras | Corregir el arco, no compensar con líneas |
+
+---
+
+## Patrones que noto en mí mismo
+
+Reflexiones sobre **cómo** aprendo, no qué aprendo. Esta sección la actualizo cuando reconozco un patrón nuevo.
+
+### Tiendo a saltar la simulación cuando creo que el código está "obviamente bien"
+
+He cometido el mismo tipo de error tres veces: termino un programa, tengo confianza en él, ejecuto sin simular completamente, y descubro un error que la simulación habría detectado en 30 segundos. La lección no es "ten más cuidado" — es **forzarme a simular siempre**, sin excepciones, incluso cuando creo que es innecesario.
+
+La regla que adopté: **un programa no está terminado hasta que pasa simulación completa, paso a paso, en single block**.
+
+### Confundo "comprender un concepto" con "saber aplicarlo"
+
+Leí sobre I/J en un manual antes de programar O0006. Cuando llegué a programar, asumí que entender la teoría equivalía a poder aplicarla. No es lo mismo. Comprender es pasivo; aplicar requiere haber traducido el concepto a una metodología paso a paso.
+
+La regla que adopté: **antes de aplicar un concepto nuevo, escribir la metodología en pasos numerados** (como hice arriba para I/J). Si no puedo escribir los pasos, no comprendí lo suficiente para aplicar.
+
+### Error productivo es mejor que código perfecto desde el inicio
+
+Mi versión inicial de cada ejercicio tiene errores. La segunda versión los corrige. La tercera optimiza. Este patrón no es señal de incompetencia — es **iteración**, que es como funciona la ingeniería real. El intento de "código perfecto al primer intento" lleva a parálisis.
+
+---
+
+## Siguiente entrada esperada
+
+Cuando introduzca **compensación de radio (G41/G42)** en algún ejercicio futuro, vendrá una nueva sección. Ya sé conceptualmente qué hace (compensa por el radio de la herramienta para que la trayectoria programada coincida con el borde de la pieza), pero no la he aplicado. Cuando lo haga, lo más interesante será documentar **qué entendí mal al primer intento** — eso es lo que vale registrar.
+
+---
+
+**Última actualización:** Marzo 2026
+**Estado:** Documento vivo, se nutre con cada concepto nuevo que cometo el error de no entender bien al inicio.
